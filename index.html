@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>העלאת מסמכים - Booking For You</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+            background: linear-gradient(135deg, #0fb5ba 0%, #17a2b8 50%, #138496 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            max-width: 700px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo {
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            width: 180px;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 50%;
+            display: block;
+            margin: 0 auto;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            object-position: center 55%;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #2d3748;
+            margin-bottom: 12px;
+        }
+
+        .header .subtitle {
+            font-size: 15px;
+            color: #718096;
+            line-height: 1.7;
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 14px 18px;
+            border-right: 4px solid #17a2b8;
+        }
+
+        .form-field {
+            margin-bottom: 28px;
+        }
+
+        .form-field label {
+            display: block;
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 6px;
+        }
+
+        .form-field .field-note {
+            font-size: 13px;
+            color: #a0aec0;
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .upload-area {
+            border: 2px dashed #cbd5e0;
+            border-radius: 12px;
+            padding: 28px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            background: #f7fafc;
+        }
+
+        .upload-area:hover {
+            border-color: #17a2b8;
+            background: #e6fafb;
+        }
+
+        .upload-area.dragover {
+            border-color: #17a2b8;
+            background: #e6fafb;
+            transform: scale(1.01);
+        }
+
+        .upload-area.has-file {
+            border-color: #48bb78;
+            background: #f0fff4;
+        }
+
+        .upload-area input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .upload-icon {
+            font-size: 36px;
+            margin-bottom: 8px;
+        }
+
+        .upload-text {
+            font-size: 14px;
+            color: #718096;
+        }
+
+        .upload-text strong {
+            color: #17a2b8;
+        }
+
+        .file-name {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #48bb78;
+            font-weight: 600;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .file-name.visible {
+            display: flex;
+        }
+
+        .preview-img {
+            max-width: 200px;
+            max-height: 150px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: none;
+            margin-inline: auto;
+        }
+
+        .preview-img.visible {
+            display: block;
+        }
+
+        .optional-badge {
+            display: inline-block;
+            background: #edf2f7;
+            color: #a0aec0;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-right: 6px;
+            font-weight: 400;
+        }
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #0fb5ba 0%, #138496 100%);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(23, 162, 184, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .field-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #0fb5ba 0%, #138496 100%);
+            color: #fff;
+            border-radius: 50%;
+            font-size: 14px;
+            font-weight: 700;
+            margin-left: 8px;
+            flex-shrink: 0;
+        }
+
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .success-message.visible {
+            display: block;
+        }
+
+        .success-message .checkmark {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .success-message h2 {
+            color: #48bb78;
+            margin-bottom: 8px;
+        }
+
+        .success-message p {
+            color: #718096;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #cbd5e0;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: inherit;
+            background: #f7fafc;
+            transition: border-color 0.2s;
+            text-align: right;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: #17a2b8;
+            background: #fff;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 24px 18px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <img src="download (1).png" alt="Booking4U Group">
+            </div>
+            <h1>העלאת מסמכים</h1>
+            <p class="subtitle">
+                נא לפעול לפי ההנחיות בכל שדה. ניתן להעלות קבצים / צילום מסך / תמונה מהגלרייה.
+            </p>
+        </div>
+
+        <form id="uploadForm">
+            <!-- Full Name -->
+            <div class="form-field">
+                <label>
+                    שם מלא
+                </label>
+                <input type="text" id="fullName" class="text-input" placeholder="הכנס שם מלא" required>
+            </div>
+
+            <!-- Phone Number -->
+            <div class="form-field">
+                <label>
+                    מספר טלפון
+                </label>
+                <input type="tel" id="phoneNumber" class="text-input" placeholder="הכנס מספר טלפון" required>
+            </div>
+
+            <!-- Field 1 -->
+            <div class="form-field">
+                <label>
+                    <span class="field-number">1</span>
+                    צילום תעודה מזהה – חזית התעודה
+                </label>
+                <p class="field-note">עדיפות ראשונה לרישיון נהיגה, אם אין – תעודת זהות</p>
+                <div class="upload-area" data-field="id-front">
+                    <input type="file" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" data-field="id-front">
+                    <div class="upload-icon">📄</div>
+                    <p class="upload-text">גרור קובץ לכאן או <strong>לחץ לבחירה</strong></p>
+                    <div class="file-name" data-filename="id-front"></div>
+                    <img class="preview-img" data-preview="id-front" alt="תצוגה מקדימה">
+                </div>
+            </div>
+
+            <!-- Field 2 -->
+            <div class="form-field">
+                <label>
+                    <span class="field-number">2</span>
+                    צילום תעודה מזהה – גב התעודה
+                </label>
+                <div class="upload-area" data-field="id-back">
+                    <input type="file" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" data-field="id-back">
+                    <div class="upload-icon">📄</div>
+                    <p class="upload-text">גרור קובץ לכאן או <strong>לחץ לבחירה</strong></p>
+                    <div class="file-name" data-filename="id-back"></div>
+                    <img class="preview-img" data-preview="id-back" alt="תצוגה מקדימה">
+                </div>
+            </div>
+
+            <!-- Field 3 -->
+            <div class="form-field">
+                <label>
+                    <span class="field-number">3</span>
+                    אישור ניהול חשבון בנק
+                </label>
+                <p class="field-note">
+                    יש לוודא שבאישור מופיע מספר IBAN.
+                    נא לוודא עם הבנק שהחשבון מוגדר כמורשה לקבלת העברות כספיות מחו"ל.
+                </p>
+                <div class="upload-area" data-field="bank">
+                    <input type="file" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" data-field="bank">
+                    <div class="upload-icon">🏦</div>
+                    <p class="upload-text">גרור קובץ לכאן או <strong>לחץ לבחירה</strong></p>
+                    <div class="file-name" data-filename="bank"></div>
+                    <img class="preview-img" data-preview="bank" alt="תצוגה מקדימה">
+                </div>
+            </div>
+
+            <!-- Field 4 -->
+            <div class="form-field">
+                <label>
+                    <span class="field-number">4</span>
+                    תמונת פנים מחייכת של המארח/ים
+                </label>
+                <p class="field-note">
+                    להשתדל ללא משקפי שמש – תמונת פנים נעימה ומזמינה שהאורחים יכולים לראות מי המארח שלהם.
+                </p>
+                <div class="upload-area" data-field="photo">
+                    <input type="file" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" data-field="photo">
+                    <div class="upload-icon">😊</div>
+                    <p class="upload-text">גרור קובץ לכאן או <strong>לחץ לבחירה</strong></p>
+                    <div class="file-name" data-filename="photo"></div>
+                    <img class="preview-img" data-preview="photo" alt="תצוגה מקדימה">
+                </div>
+            </div>
+
+            <!-- Field 5 -->
+            <div class="form-field">
+                <label>
+                    <span class="field-number">5</span>
+                    לוגו מתחם האירוח
+                    <span class="optional-badge">לא חובה</span>
+                </label>
+                <p class="field-note">רק במידה וקיים</p>
+                <div class="upload-area" data-field="logo">
+                    <input type="file" accept="image/*,.pdf,.svg" data-field="logo">
+                    <div class="upload-icon">🏠</div>
+                    <p class="upload-text">גרור קובץ לכאן או <strong>לחץ לבחירה</strong></p>
+                    <div class="file-name" data-filename="logo"></div>
+                    <img class="preview-img" data-preview="logo" alt="תצוגה מקדימה">
+                </div>
+            </div>
+
+            <!-- Field 6 -->
+            <div class="form-field">
+                <label>
+                    <span class="field-number">6</span>
+                    תעודת עוסק / התאגדות
+                </label>
+                <p class="field-note">עוסק פטור / מורשה / חברה בע"מ</p>
+                <div class="upload-area" data-field="business">
+                    <input type="file" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" data-field="business">
+                    <div class="upload-icon">📋</div>
+                    <p class="upload-text">גרור קובץ לכאן או <strong>לחץ לבחירה</strong></p>
+                    <div class="file-name" data-filename="business"></div>
+                    <img class="preview-img" data-preview="business" alt="תצוגה מקדימה">
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">שליחת המסמכים</button>
+        </form>
+
+        <div class="success-message" id="successMessage">
+            <div class="checkmark">&#10004;&#65039;</div>
+            <h2>המסמכים נשלחו בהצלחה!</h2>
+            <p>תודה רבה, ניצור איתך קשר בהקדם.</p>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.upload-area').forEach(area => {
+            const input = area.querySelector('input[type="file"]');
+            const fieldKey = area.dataset.field;
+
+            // Drag & drop
+            ['dragenter', 'dragover'].forEach(evt => {
+                area.addEventListener(evt, e => {
+                    e.preventDefault();
+                    area.classList.add('dragover');
+                });
+            });
+
+            ['dragleave', 'drop'].forEach(evt => {
+                area.addEventListener(evt, e => {
+                    e.preventDefault();
+                    area.classList.remove('dragover');
+                });
+            });
+
+            area.addEventListener('drop', e => {
+                const files = e.dataTransfer.files;
+                if (files.length) {
+                    input.files = files;
+                    handleFile(files[0], fieldKey);
+                }
+            });
+
+            input.addEventListener('change', () => {
+                if (input.files.length) {
+                    handleFile(input.files[0], fieldKey);
+                }
+            });
+        });
+
+        function handleFile(file, fieldKey) {
+            const area = document.querySelector(`.upload-area[data-field="${fieldKey}"]`);
+            const fileNameEl = document.querySelector(`[data-filename="${fieldKey}"]`);
+            const previewEl = document.querySelector(`[data-preview="${fieldKey}"]`);
+
+            area.classList.add('has-file');
+            fileNameEl.textContent = file.name;
+            fileNameEl.classList.add('visible');
+
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    previewEl.src = e.target.result;
+                    previewEl.classList.add('visible');
+                };
+                reader.readAsDataURL(file);
+            } else {
+                previewEl.classList.remove('visible');
+            }
+        }
+
+        document.getElementById('uploadForm').addEventListener('submit', async e => {
+            e.preventDefault();
+
+            const fullName = document.getElementById('fullName').value.trim();
+            if (!fullName) {
+                alert('נא להזין שם מלא');
+                document.getElementById('fullName').focus();
+                return;
+            }
+
+            const phoneNumber = document.getElementById('phoneNumber').value.trim();
+            if (!phoneNumber) {
+                alert('נא להזין מספר טלפון');
+                document.getElementById('phoneNumber').focus();
+                return;
+            }
+
+
+            const submitBtn = document.querySelector('.submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'שולח מסמכים...';
+
+            const allFields = ['id-front', 'id-back', 'bank', 'photo', 'logo', 'business'];
+            const formData = new FormData();
+
+            formData.append('fullName', fullName);
+            formData.append('phoneNumber', phoneNumber);
+
+            allFields.forEach(field => {
+                const input = document.querySelector(`input[type="file"][data-field="${field}"]`);
+                if (input.files.length) {
+                    formData.append(field, input.files[0]);
+                }
+            });
+
+            try {
+                const response = await fetch('https://hook.eu1.make.com/qe6yj1q3nki8eq2xfn181v12f78est6p', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Server responded with ' + response.status);
+                }
+
+                document.getElementById('uploadForm').style.display = 'none';
+                document.getElementById('successMessage').classList.add('visible');
+            } catch (err) {
+                alert('שגיאה בשליחת המסמכים. נא לנסות שוב.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'שליחת המסמכים';
+            }
+        });
+    </script>
+</body>
+</html>
