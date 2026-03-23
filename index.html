@@ -149,6 +149,27 @@
             display: flex;
         }
 
+        .remove-file {
+            background: #e53e3e;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-size: 13px;
+            line-height: 22px;
+            cursor: pointer;
+            padding: 0;
+            flex-shrink: 0;
+            transition: background 0.2s;
+            position: relative;
+            z-index: 2;
+        }
+
+        .remove-file:hover {
+            background: #c53030;
+        }
+
         .preview-img {
             max-width: 200px;
             max-height: 150px;
@@ -305,7 +326,7 @@
                     <input type="file" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" data-field="id-front">
                     <div class="upload-icon">📄</div>
                     <p class="upload-text">גרור קובץ לכאן או <strong>לחץ לבחירה</strong></p>
-                    <div class="file-name" data-filename="id-front"></div>
+                    <div class="file-name" data-filename="id-front"><span class="file-name-text"></span><button type="button" class="remove-file" data-remove="id-front" title="הסר קובץ">✕</button></div>
                     <img class="preview-img" data-preview="id-front" alt="תצוגה מקדימה">
                 </div>
             </div>
@@ -320,7 +341,7 @@
                     <input type="file" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" data-field="id-back">
                     <div class="upload-icon">📄</div>
                     <p class="upload-text">גרור קובץ לכאן או <strong>לחץ לבחירה</strong></p>
-                    <div class="file-name" data-filename="id-back"></div>
+                    <div class="file-name" data-filename="id-back"><span class="file-name-text"></span><button type="button" class="remove-file" data-remove="id-back" title="הסר קובץ">✕</button></div>
                     <img class="preview-img" data-preview="id-back" alt="תצוגה מקדימה">
                 </div>
             </div>
@@ -339,7 +360,7 @@
                     <input type="file" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" data-field="bank">
                     <div class="upload-icon">🏦</div>
                     <p class="upload-text">גרור קובץ לכאן או <strong>לחץ לבחירה</strong></p>
-                    <div class="file-name" data-filename="bank"></div>
+                    <div class="file-name" data-filename="bank"><span class="file-name-text"></span><button type="button" class="remove-file" data-remove="bank" title="הסר קובץ">✕</button></div>
                     <img class="preview-img" data-preview="bank" alt="תצוגה מקדימה">
                 </div>
             </div>
@@ -357,7 +378,7 @@
                     <input type="file" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" data-field="photo">
                     <div class="upload-icon">😊</div>
                     <p class="upload-text">גרור קובץ לכאן או <strong>לחץ לבחירה</strong></p>
-                    <div class="file-name" data-filename="photo"></div>
+                    <div class="file-name" data-filename="photo"><span class="file-name-text"></span><button type="button" class="remove-file" data-remove="photo" title="הסר קובץ">✕</button></div>
                     <img class="preview-img" data-preview="photo" alt="תצוגה מקדימה">
                 </div>
             </div>
@@ -374,7 +395,7 @@
                     <input type="file" accept="image/*,.pdf,.svg" data-field="logo">
                     <div class="upload-icon">🏠</div>
                     <p class="upload-text">גרור קובץ לכאן או <strong>לחץ לבחירה</strong></p>
-                    <div class="file-name" data-filename="logo"></div>
+                    <div class="file-name" data-filename="logo"><span class="file-name-text"></span><button type="button" class="remove-file" data-remove="logo" title="הסר קובץ">✕</button></div>
                     <img class="preview-img" data-preview="logo" alt="תצוגה מקדימה">
                 </div>
             </div>
@@ -390,7 +411,7 @@
                     <input type="file" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" data-field="business">
                     <div class="upload-icon">📋</div>
                     <p class="upload-text">גרור קובץ לכאן או <strong>לחץ לבחירה</strong></p>
-                    <div class="file-name" data-filename="business"></div>
+                    <div class="file-name" data-filename="business"><span class="file-name-text"></span><button type="button" class="remove-file" data-remove="business" title="הסר קובץ">✕</button></div>
                     <img class="preview-img" data-preview="business" alt="תצוגה מקדימה">
                 </div>
             </div>
@@ -446,7 +467,7 @@
             const previewEl = document.querySelector(`[data-preview="${fieldKey}"]`);
 
             area.classList.add('has-file');
-            fileNameEl.textContent = file.name;
+            fileNameEl.querySelector('.file-name-text').textContent = file.name;
             fileNameEl.classList.add('visible');
 
             if (file.type.startsWith('image/')) {
@@ -460,6 +481,24 @@
                 previewEl.classList.remove('visible');
             }
         }
+
+        document.querySelectorAll('.remove-file').forEach(btn => {
+            btn.addEventListener('click', e => {
+                e.stopPropagation();
+                const fieldKey = btn.dataset.remove;
+                const area = document.querySelector(`.upload-area[data-field="${fieldKey}"]`);
+                const input = area.querySelector('input[type="file"]');
+                const fileNameEl = document.querySelector(`[data-filename="${fieldKey}"]`);
+                const previewEl = document.querySelector(`[data-preview="${fieldKey}"]`);
+
+                input.value = '';
+                area.classList.remove('has-file');
+                fileNameEl.querySelector('.file-name-text').textContent = '';
+                fileNameEl.classList.remove('visible');
+                previewEl.src = '';
+                previewEl.classList.remove('visible');
+            });
+        });
 
         document.getElementById('uploadForm').addEventListener('submit', async e => {
             e.preventDefault();
